@@ -216,13 +216,13 @@ var Primitive = (function () {
                 vs = [0.0, 1.0, 0.0, 0.5, 0.0], is = [], vertCoords = vs.length,
                 result;
 
-            for (i = 0; i < n - 1; i = i / vertCoords + 1) {
+            for (i = 0 ; i < n - 1 ; i = i / vertCoords + 1) {
                 x = vs[i *= vertCoords] * mC(angle) - vs[++i] * mS(angle),
-                    y = vs[--i] * mS(angle) + vs[++i] * mC(angle),
-                    z = vs[--i + 2],
-                    u = 0.5 + (x / 1.0) / 2,
-                    v = 0.5 - (y / 1.0) / 2,
-                    vs.push(x, y, z, u, v);
+                y = vs[--i] * mS(angle) + vs[++i] * mC(angle),
+                z = vs[--i + 2],
+                u = 0.5 + (x / 1.0) / 2,
+                v = 0.5 - (y / 1.0) / 2,
+                vs.push(x, y, z, u, v);
                 if (i > 0) {
                     j = i / vertCoords;
                     is.push(0, j, j + 1); // 최상단 최초 꼭지점 기준
@@ -230,6 +230,7 @@ var Primitive = (function () {
             }
             result = new Geometry(vs, is, [Vertex.x, Vertex.y, Vertex.z, Vertex.u, Vertex.v]);
             result._key = 'polygon_' + (arguments[0] || 1);
+
             return result;
         }
     }

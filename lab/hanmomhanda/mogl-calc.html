@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head lang="ko">
+    <meta charset="UTF-8">
+    <title>MoGL - 계산기</title>
+    <meta property="og:image" content="http://th04.deviantart.net/fs71/PRE/f/2011/210/2/d/mai_shiranui_ryu_en_bu_colored_by_evil1980-d420pa6.png"/>
+    <meta property="og:title" content="MoGL - Calculator"/>
+    <meta property="og:description" content="MoGL.js caculator"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,target-densitydpi=high-dpi "/>
+</head>
+<body>
+<h1>도형을 클릭해 주세요</h1>
+<canvas id="canvas" width="300" height="600"></canvas>
+<form>
+    <input type="text" id='arg0' maxlengh="4" readonly>
+    <input type="text" id='operator' maxlengh="1" readonly>
+    <input type="text" id='arg1' maxlengh="4" readonly>
+    <input type="text" id='result' maxlengh="10" readonly>
+</form>
+<script src="/MoGL/src/MoGL.js"></script>
+<script src="/MoGL/src/BlendMode.js"></script>
+<script src="/MoGL/src/Filter.js"></script>
+<script src="/MoGL/src/Vertex.js"></script>
+<script src="/MoGL/src/Shading.js"></script>
+<script src="/MoGL/src/VertexShaderFunctions.js"></script>
+<script src="/MoGL/src/Matrix.js"></script>
+<script src="Geometry.js"></script>
+<script src="/MoGL/src/Material.js"></script>
+<script src="/MoGL/src/Texture.js"></script>
+<script src="/MoGL/src/Primitive.js"></script>
+<script src="Mesh.js"></script>
+<script src="/MoGL/src/Group.js"></script>
+<script src="/MoGL/src/Camera.js"></script>
+<script src="/MoGL/src/Scene.js"></script>
+<script src="/MoGL/src/World.js"></script>
+<script>
+    (function() {
+        // 모델
+        var M = (function() {
+            var arg0, arg1, operator, operatorIndex;
+            operator = ['+', '-', '*', '/'];
+
+            var M = function() {
+
+            };
+            M.getArg0 = function() {
+                return arg0;
+            };
+            M.setArg0 = function(val) {
+                arg0 = val;
+            };
+            M.getArg1 = function() {
+                return arg1;
+            };
+            M.setArg1 = function(val) {
+                arg1 = val;
+            };
+            M.getOperator = function() {
+                return operator[operatorIndex];
+            };
+            M.setOperator = function(val) {
+                operatorIndex = val;
+            };
+            M.getResult = function() {
+                return eval(arg0 + operator[operatorIndex] + arg1);
+            };
+            return M;
+        }());
+
+        // 뷰
+        var V = (function() {
+            var world = new World('canvas'),
+                scene = new Scene(),
+                camera = new Camera(),
+                solidWhite = new Material('#ffffff'),
+                solidRed = new Material('#ff0000'),
+                solidGreen = new Material('#00ff00'),
+                solidBlue = new Material('#0000ff'),
+                mesh0, mesh1, mesh2, mesh3, V;
+
+            V = function() {
+
+            };
+            V.init = function() {
+                world.addScene(scene);
+                scene.addChild('camera', camera);
+                mesh0 = new Mesh(Primitive.polygon(3), solidRed);
+                mesh0.y = 3;
+                mesh1 = new Mesh(Primitive.polygon(5), solidGreen);
+                mesh1.y = 1;
+                mesh2 = new Mesh(Primitive.polygon(7), solidBlue);
+                mesh2.y = -1;
+                mesh3 = new Mesh(Primitive.polygon(9), solidWhite);
+                mesh3.y = -3;
+
+
+
+                scene.addChild('mesh0', mesh0);
+                scene.addChild('mesh1', mesh1);
+                scene.addChild('mesh2', mesh2);
+                scene.addChild('mesh3', mesh3);
+
+                var mesh4 = new Mesh(Primitive.polygon(3), solidWhite);
+                mesh4.y = 3;
+                scene.addChild('mesh4', mesh4);
+
+                world.render();
+            };
+            V.getMesh = function(id) {
+                return scene.getChild(id);
+            };
+            V.contains = function(meshId, x, y, w, h) {
+                var mesh = scene.getChild(meshId);
+                return mesh.contains(x, y, w, h);
+            };
+            V.render = function() {
+                world.render();
+            };
+            return V;
+        }());
+
+        // 컨트롤러
+        var C = (function() {
+            var canvas = document.getElementById('canvas'),
+                canvasB = canvas.getBoundingClientRect(),
+                arg0 = document.getElementById('arg0'),
+                operator = document.getElementById('operator'),
+                arg1 = document.getElementById('arg1'),
+                result = document.getElementById('result'),
+                PI = Math.PI / 180;
+
+            canvas.addEventListener('mouseup', function(evt) {
+                var x, y,
+                    mesh0, mesh1, mesh2, mesh3,
+                    randomN;
+console.log('evt.clientX : ', evt.clientX);
+console.log('canvasB.left : ', canvasB.left);
+console.log('canvasB.width : ', canvasB.width);
+console.log('document.body.scrollLeft : ', document.body.scrollLeft);
+console.log('evt.clientY : ', evt.clientY);
+console.log('canvasB.top : ', Math.round(canvasB.top));
+console.log('canvasB.height : ', canvasB.height);
+console.log('document.body.scrollTop : ', document.body.scrollTop);
+                x = evt.clientX - canvasB.left - canvasB.width/2,
+                y = canvasB.height/2 - (evt.clientY + document.body.scrollTop - Math.round(canvasB.top));
+console.log('x : ', x);
+console.log('y : ', y);
+
+//alert('x : ' + x + ', y : ' + y);
+//alert('width : ' + canvasB.width + ', height : ' + canvasB.height);
+//console.log('mesh0 : ', V.getMesh('mesh0').getRotate());
+console.log('mesh0.y : ', V.getMesh('mesh0').y);
+console.log('mesh0.position : ', V.getMesh('mesh0').getPosition());
+                if (V.contains('mesh0', x, y, canvasB.width, canvasB.height)) {
+                    M.setArg0(arg0.value = Math.round(Math.random()*360));
+                    V.getMesh('mesh0').setRotate([0, 0, M.getArg0() * PI]);
+
+                    V.render();
+                } else if (V.contains('mesh1', x, y, canvasB.width, canvasB.height)) {
+                    randomN = Math.round(Math.random()*360);
+                    M.setOperator(randomN % 4);
+                    operator.value = M.getOperator();
+                    V.getMesh('mesh1').setRotate([0, 0, randomN * PI]);
+                    V.render();
+                } else if (V.contains('mesh2', x, y, canvasB.width, canvasB.height)) {
+                    M.setArg1(arg1.value = Math.round(Math.random()*360));
+                    V.getMesh('mesh2').setRotate([0, 0, M.getArg1() * PI]);
+                    V.render();
+                } else if (V.contains('mesh3', x, y, canvasB.width, canvasB.height)) {
+                    result.value = M.getResult();
+                    V.getMesh('mesh3').setRotate([0, 0, M.getResult() * PI]);
+                    V.render();
+                }
+
+            });
+            V.init();
+        }());
+    }());
+</script>
+</body>
+</html>
